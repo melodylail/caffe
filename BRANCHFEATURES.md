@@ -69,3 +69,8 @@ layers {
 The shape of `sample_weight` should be the same as `label`, which normally
 means `(N, C, 1, 1)`, where `N` is the number of samples and `C` the number of
 classes.
+
+### Hypercolumn Layer
+
+TODO: Docs
+
