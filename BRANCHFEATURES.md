@@ -10,13 +10,13 @@ This document describes the new features in this Caffe branch.
 |--------------------------|-----------------------|
 | WeightedSoftmaxLossLayer | `WeightedSoftmaxLoss` |
 
-Similar to `SOFTMAX_LOSS`, except it takes a third bottom input specifying the
+Similar to `SoftmaxLoss`, except it takes a third bottom input specifying the
 importance of each sample, e.g.:
 
 ```
-layers {
+layer {
   name: "loss"
-  type: WEIGHTED_SOFTMAX_LOSS
+  type: "WeightedSoftmaxLoss"
   bottom: "fc"
   bottom: "label"
   bottom: "sample_weight"
@@ -31,9 +31,9 @@ any number of inputs with any key. That way, you can add `sample_weight` (or
 whatever you wish to name it) to your data file:
 
 ```
-layers {
+layer {
   name: "main"
-  type: HDF5_DATA
+  type: "HDF5Data"
   top: "data"
   top: "label"
   top: "sample_weight"
@@ -53,13 +53,13 @@ but I think it will work analogously.
 |--------------------------------------|-------------------------------|
 | WeightedSigmoidCrossEntropyLossLayer | `WeightedSigmoidCrossEntropy` |
 
-Similar to `SIGMOID_CROSS_ENTROPY_LOSS`, except it takes a third bottom input
+Similar to `SigmoidCrossEntropy`, except it takes a third bottom input
 specifying the importance of each sample, e.g.:
 
 ```
-layers {
+layer {
   name: "loss"
-  type: WEIGHTED_SIGMOID_CROSS_ENTROPY_LOSS
+  type: "WeightedSigmoidCrossEntropy"
   bottom: "fc"
   bottom: "label"
   bottom: "sample_weight"
