@@ -6,9 +6,9 @@ This document describes the new features in this Caffe branch.
 
 ### Weighted Softmax Loss Layer
 
-| Class name               | Prototxt name                 |
-|--------------------------|-------------------------------|
-| WeightedSoftmaxLossLayer | `WEIGHTED_SOFTMAX_LOSS_LAYER` |
+| Class name               | Prototxt name         |
+|--------------------------|-----------------------|
+| WeightedSoftmaxLossLayer | `WeightedSoftmaxLoss` |
 
 Similar to `SOFTMAX_LOSS`, except it takes a third bottom input specifying the
 importance of each sample, e.g.:
@@ -49,9 +49,9 @@ but I think it will work analogously.
 
 ### Weighted Sigmoid Cross-entropy Loss Layer
 
-| Class name                           | Prototxt name                         |
-|--------------------------------------|---------------------------------------|
-| WeightedSigmoidCrossEntropyLossLayer | `WEIGHTED_SIGMOID_CROSS_ENTROPY_LOSS` |
+| Class name                           | Prototxt name                 |
+|--------------------------------------|-------------------------------|
+| WeightedSigmoidCrossEntropyLossLayer | `WeightedSigmoidCrossEntropy` |
 
 Similar to `SIGMOID_CROSS_ENTROPY_LOSS`, except it takes a third bottom input
 specifying the importance of each sample, e.g.:
@@ -72,5 +72,53 @@ classes.
 
 ### Hypercolumn Layer
 
-TODO: Docs
+| Class name                | Prototxt name          |
+|---------------------------|------------------------|
+| HypercolumnExtractorLayer | `HypercolumnExtractor` |
 
+Example:
+
+```
+layer {
+  name: "hypercolumn"
+  type: "HypercolumnExtractor"
+  bottom: "centroids"
+  bottom: "conv1"
+  bottom: "conv2"
+  bottom: "conv3"
+  top: "columns"
+
+  hypercolumn_extractor_param {
+    scale: 2
+    scale: 4
+    scale: 8
+
+    offset_height: 3
+    offset_height: 4
+    offset_height: 4
+
+    offset_width: 3
+    offset_width: 4
+    offset_width: 4
+  }
+}
+```
+The first bottom input provides the hypercolumn locations and should be floats
+of shape `(N, P, 2)`, where `P` is the number of hypercolumns. The last axis
+provides the location (first vertical and then horizontal) in an arbitrarily
+chosen reference coordinate system (the original image size is of course
+recommended). The translation between a point, `p`, in the reference coordinate
+system and in the local layer `local_p` is defined as `p = offset + local_p *
+scale`. The offset and the scale is defined in the `hypercolumn_extract_param`
+as in the example above.
+
+All following bottom inputs are the layers from which to construct the
+hypercolumn. You can use any number of layers. Make sure to specify the
+coordinate translation parameters for each layer.
+
+A hypercolumn is unlikely to land exactly on the grid of a layer's filter, so
+bilinear interpolation is used to combined the closest four.
+
+The top output will be of shape `(N * P, C)` where `C` is the sum of the
+channels for all input layers. For instance, if `conv1` through `conv3` have
+16, 32 and 64 filters respectively, then `C` will be 112.
