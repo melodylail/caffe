@@ -117,7 +117,8 @@ hypercolumn. You can use any number of layers. Make sure to specify the
 coordinate translation parameters for each layer.
 
 A hypercolumn is unlikely to land exactly on the grid of a layer's filter, so
-bilinear interpolation is used to combined the closest four.
+bilinear interpolation is used to combined the closest four. If the location
+is outside the filter grid of any layer it will take the closest valid value.
 
 The top output will be of shape `(N * P, C)` where `C` is the sum of the
 channels for all input layers. For instance, if `conv1` through `conv3` have
