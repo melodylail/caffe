@@ -1,3 +1,7 @@
+# Lu Qiang
+!!!useful examples for visualizing the layer output...!!!
+see examples/filter_visualization
+
 # Caffe
 
 **Note:** Read about the new features in this branch in [BRANCHFEATURES.md](BRANCHFEATURES.md).
